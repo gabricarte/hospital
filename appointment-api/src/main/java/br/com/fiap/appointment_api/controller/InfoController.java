@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RestController
 @RequestMapping()
@@ -20,7 +19,7 @@ import java.util.UUID;
 public class InfoController {
     private final BuildProperties buildProperties;
 
-    private final AppointmentMessagePublisher messagePublisher; // injetar o publisher
+    private final AppointmentMessagePublisher messagePublisher;
 
     private final ObjectMapper objectMapper;
 
@@ -28,8 +27,8 @@ public class InfoController {
     public ResponseEntity<InfoDTO> find() {
 
         AppointmentNotificationDTO dto = new AppointmentNotificationDTO(
-                "paciente@email.com",
-                "João Silva",
+                "gabicode0@gmail.com",
+                "Gabriela Ricarte",
                 "Dra. Ana",
                 LocalDateTime.now()
         );

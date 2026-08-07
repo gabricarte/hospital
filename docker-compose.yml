@@ -51,7 +51,7 @@ services:
     container_name: hospital-notification-api
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "8082:8081"
     depends_on:
       - rabbitmq
     environment:
@@ -60,8 +60,7 @@ services:
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=admin
 
-volumes:
-  mysql_data:
-    name: hospital_mysql_data
-  rabbitmq_data:
-    name: hospital_rabbitmq_data
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=gabicode0@gmail.com
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}

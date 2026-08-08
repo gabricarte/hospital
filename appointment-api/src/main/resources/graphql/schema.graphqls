@@ -1,0 +1,36 @@
+type Patient {
+    id: ID!
+    name: String!
+    cpf: String!
+    email: String!
+}
+
+type Doctor {
+    id: ID!
+    name: String!
+    crm: String!
+    specialty: String!
+}
+
+type Appointment {
+    id: ID!
+    patient: Patient!
+    doctor: Doctor!
+    dateTime: String!
+    status: AppointmentStatus!
+}
+
+enum AppointmentStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELED
+}
+
+type Query {
+
+    appointmentsByPatient(patientId: ID!): [Appointment!]!
+
+    futureAppointmentsByPatient(patientId: ID!): [Appointment!]!
+
+    appointmentHistory(patientId: ID!): [Appointment!]!
+}

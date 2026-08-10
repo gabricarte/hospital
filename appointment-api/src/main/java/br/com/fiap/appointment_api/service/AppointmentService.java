@@ -57,7 +57,7 @@ public class AppointmentService {
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
         appointment.setDateTime(dateTime);
-        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        appointment.setStatus(AppointmentStatus.AGENDADA);
 
         return appointmentRepository.save(appointment);
     }
@@ -98,13 +98,13 @@ public class AppointmentService {
     public Appointment cancel(Long id) {
         Appointment appointment = findById(id);
 
-        if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
+        if (appointment.getStatus() != AppointmentStatus.AGENDADA) {
             throw new BusinessException(
                     "Apenas consultas agendadas podem ser canceladas."
             );
         }
 
-        appointment.setStatus(AppointmentStatus.CANCELED);
+        appointment.setStatus(AppointmentStatus.CANCELADA);
 
         return appointmentRepository.save(appointment);
     }
@@ -112,13 +112,13 @@ public class AppointmentService {
     public Appointment complete(Long id) {
         Appointment appointment = findById(id);
 
-        if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
+        if (appointment.getStatus() != AppointmentStatus.AGENDADA) {
             throw new BusinessException(
                     "Apenas consultas agendadas podem ser concluídas."
             );
         }
 
-        appointment.setStatus(AppointmentStatus.COMPLETED);
+        appointment.setStatus(AppointmentStatus.CONCLUIDA);
 
         return appointmentRepository.save(appointment);
     }

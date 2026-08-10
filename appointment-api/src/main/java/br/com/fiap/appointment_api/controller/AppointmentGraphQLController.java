@@ -1,10 +1,10 @@
 package br.com.fiap.appointment_api.controller;
 
-import br.com.fiap.appointment_api.domain.entity.Appointment;
-import br.com.fiap.appointment_api.service.AppointmentService;
+import br.com.fiap.appointment_api.domain.dto.response.AppointmentResponse;
+import br.com.fiap.appointment_api.mapper.AppointmentMapper;
+import br.com.fiap.appointment_api.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -15,60 +15,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppointmentGraphQLController {
 
-    private final AppointmentService appointmentService;
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @QueryMapping
-    public List<Appointment> appointmentsByPatient(
+    public List<AppointmentResponse> appointmentsByPatient(
             @Argument Long patientId
     ) {
-        return appointmentService.findByPatientId(patientId);
+        return appointmentRepository
+                .findByPatientId(patientId)
+                .stream()
+                .map(appointmentMapper::toResponse)
+                .toList();
     }
 
     @QueryMapping
-    public List<Appointment> futureAppointmentsByPatient(
+    public List<AppointmentResponse> futureAppointmentsByPatient(
             @Argument Long patientId
     ) {
-        return appointmentService.findFutureByPatientId(patientId);
+        return appointmentRepository
+                .findByPatientIdAndDateTimeAfter(
+                        patientId,
+                        LocalDateTime.now()
+                )
+                .stream()
+                .map(appointmentMapper::toResponse)
+                .toList();
     }
 
     @QueryMapping
-    public List<Appointment> appointmentHistory(
+    public List<AppointmentResponse> appointmentHistory(
             @Argument Long patientId
     ) {
-        return appointmentService.findHistoryByPatientId(patientId);
-    }
-
-    @QueryMapping
-    public Appointment appointment(
-            @Argument Long id
-    ) {
-        return appointmentService.findById(id);
-    }
-
-    @MutationMapping
-    public Appointment createAppointment(
-            @Argument Long patientId,
-            @Argument Long doctorId,
-            @Argument String dateTime
-    ) {
-        return appointmentService.create(
-                patientId,
-                doctorId,
-                LocalDateTime.parse(dateTime)
-        );
-    }
-
-    @MutationMapping
-    public Appointment cancelAppointment(
-            @Argument Long id
-    ) {
-        return appointmentService.cancel(id);
-    }
-
-    @MutationMapping
-    public Appointment completeAppointment(
-            @Argument Long id
-    ) {
-        return appointmentService.complete(id);
+        return appointmentRepository
+                .findByPatientId(patientId)
+                .stream()
+                .map(appointmentMapper::toResponse)
+                .toList();
     }
 }

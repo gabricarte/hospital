@@ -1,4 +1,5 @@
 services:
+
   mysql:
     image: mysql:8.0
     container_name: hospital-mysql
@@ -24,43 +25,49 @@ services:
       - "5672:5672"
       - "15672:15672"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_data:/var/lib/rabbitmq
 
   appointment-api:
     build: ./appointment-api
     container_name: hospital-appointment-api
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8082:8082"
     depends_on:
       - mysql
       - rabbitmq
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hospital_db?createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=admin
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=admin
-      - SPRING_RABBITMQ_PASSWORD=admin
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_JPA_SHOW_SQL=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
 
   notification-api:
     build: ./notification-api
     container_name: hospital-notification-api
     restart: unless-stopped
     ports:
-      - "8082:8081"
+      - "8081:8081"
     depends_on:
       - rabbitmq
     environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=admin
-      - SPRING_RABBITMQ_PASSWORD=admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: gabicode0@gmail.com
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
 
-      - SPRING_MAIL_HOST=smtp.gmail.com
-      - SPRING_MAIL_PORT=587
-      - SPRING_MAIL_USERNAME=gabicode0@gmail.com
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+volumes:
+  mysql_data:
+    name: hospital_mysql_data
+
+  rabbitmq_data:
+    name: hospital_rabbitmq_data

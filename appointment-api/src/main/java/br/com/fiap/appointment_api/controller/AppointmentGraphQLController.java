@@ -4,6 +4,7 @@ import br.com.fiap.appointment_api.domain.entity.Appointment;
 import br.com.fiap.appointment_api.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -27,16 +28,47 @@ public class AppointmentGraphQLController {
     public List<Appointment> futureAppointmentsByPatient(
             @Argument Long patientId
     ) {
-        return appointmentService.findFutureAppointmentsByPatient(
-                patientId,
-                LocalDateTime.now()
-        );
+        return appointmentService.findFutureByPatientId(patientId);
     }
 
     @QueryMapping
     public List<Appointment> appointmentHistory(
             @Argument Long patientId
     ) {
-        return appointmentService.findAppointmentHistory(patientId);
+        return appointmentService.findHistoryByPatientId(patientId);
+    }
+
+    @QueryMapping
+    public Appointment appointment(
+            @Argument Long id
+    ) {
+        return appointmentService.findById(id);
+    }
+
+    @MutationMapping
+    public Appointment createAppointment(
+            @Argument Long patientId,
+            @Argument Long doctorId,
+            @Argument String dateTime
+    ) {
+        return appointmentService.create(
+                patientId,
+                doctorId,
+                LocalDateTime.parse(dateTime)
+        );
+    }
+
+    @MutationMapping
+    public Appointment cancelAppointment(
+            @Argument Long id
+    ) {
+        return appointmentService.cancel(id);
+    }
+
+    @MutationMapping
+    public Appointment completeAppointment(
+            @Argument Long id
+    ) {
+        return appointmentService.complete(id);
     }
 }

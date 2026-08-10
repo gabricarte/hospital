@@ -22,9 +22,8 @@ public interface AppointmentRepository
             LocalDateTime dateTime
     );
 
-    boolean existsByDoctorIdAndDateTimeAndStatus(
+    boolean existsByDoctorIdAndDateTime(
             Long doctorId,
-            LocalDateTime dateTime,
-            AppointmentStatus status
+            LocalDateTime dateTime
     );
 }

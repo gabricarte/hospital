@@ -26,4 +26,9 @@ public interface AppointmentRepository
             Long doctorId,
             LocalDateTime dateTime
     );
+
+    boolean existsByPatientIdAndDateTime(
+            Long patientId,
+            LocalDateTime dateTime
+    );
 }

@@ -3,6 +3,7 @@ package br.com.fiap.appointment_api.exception;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.stereotype.Component;
 
@@ -16,22 +17,30 @@ public class GraphQLExceptionHandler extends DataFetcherExceptionResolverAdapter
     ) {
 
         if (exception instanceof ResourceNotFoundException) {
+
             return GraphqlErrorBuilder.newError(environment)
                     .message(exception.getMessage())
-                    .errorType(graphql.ErrorType.ValidationError)
                     .build();
         }
 
         if (exception instanceof BusinessException) {
+
             return GraphqlErrorBuilder.newError(environment)
                     .message(exception.getMessage())
-                    .errorType(graphql.ErrorType.ValidationError)
+                    .build();
+        }
+
+        if (exception instanceof ConstraintViolationException) {
+
+            String message = exception.getMessage();
+
+            return GraphqlErrorBuilder.newError(environment)
+                    .message(message)
                     .build();
         }
 
         return GraphqlErrorBuilder.newError(environment)
                 .message("Erro interno do servidor.")
-                .errorType(graphql.ErrorType.DataFetchingException)
                 .build();
     }
 }

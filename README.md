@@ -1,6 +1,6 @@
 # Hospital Management System - Tech Challenge FIAP (Fase 3)
 
-Este projeto é um sistema de gestão hospitalar focado no agendamento de consultas, desenvolvido como parte da Fase 3 do Tech Challenge da pós-graduação em Arquitetura de Software da FIAP. 
+Este projeto é um sistema de gestão hospitalar focado no agendamento de consultas, desenvolvido como parte da Fase 3 do Tech Challenge da pós-graduação em Arquitetura e Desenvolvimento em JAVA da FIAP. 
 
 A solução utiliza uma arquitetura baseada em microsserviços, focando em segurança, controle de acesso e comunicação assíncrona.
 

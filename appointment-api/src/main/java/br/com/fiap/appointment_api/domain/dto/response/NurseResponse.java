@@ -1,11 +1,8 @@
 package br.com.fiap.appointment_api.domain.dto.response;
 
-public record DoctorResponse(
-
+public record NurseResponse(
         Long id,
         String name,
-        String crm,
-        String specialty,
+        String coren,
         String username
-) {
-}
+) {}

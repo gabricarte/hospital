@@ -4,6 +4,7 @@ public record PatientResponse(
         Long id,
         String name,
         String cpf,
-        String email
+        String email,
+        String username
 ) {
 }

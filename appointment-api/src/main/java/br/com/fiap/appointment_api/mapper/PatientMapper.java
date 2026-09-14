@@ -13,7 +13,8 @@ public class PatientMapper {
                 patient.getId(),
                 patient.getName(),
                 patient.getCpf(),
-                patient.getEmail()
+                patient.getEmail(),
+                patient.getUser().getUsername()
         );
     }
 }

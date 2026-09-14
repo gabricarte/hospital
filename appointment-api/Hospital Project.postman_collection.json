@@ -1,0 +1,709 @@
+{
+  "info": {
+    "_postman_id": "3e9bffe3-bcdd-4e57-b665-c7a88391bcf6",
+    "name": "Hospital Project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54079861",
+    "_collection_link": "https://go.postman.co/collection/54079861-3e9bffe3-bcdd-4e57-b665-c7a88391bcf6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "appointment-api",
+      "item": [
+        {
+          "name": "Doctor CRUD",
+          "item": [
+            {
+              "name": "Criar um médico",
+              "request": {
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "password",
+                      "value": "",
+                      "type": "string"
+                    },
+                    {
+                      "key": "username",
+                      "value": "",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  createDoctor(input: {\r\n    name: \"Dr. Gregory House\"\r\n    crm: \"123454-SP\"\r\n    specialty: \"Infectologia\"\r\n    username: \"gregory.house\"\r\n    password: \"gregory123\"\r\n  }) {\r\n    id\r\n    name\r\n    specialty\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar todos médicos",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  doctors {\r\n    id\r\n    name\r\n    crm\r\n    specialty\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar médico por ID",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  doctor(doctorId: 1) {\r\n    id\r\n    name\r\n    crm\r\n    specialty\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar Médico",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  updateDoctor(\r\n    doctorId: 1, \r\n    name: \"Dr. Gregory House Silva\", \r\n    specialty: \"Infectologia Geral\"\r\n  ) {\r\n    id\r\n    name\r\n    specialty\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Deletar médico",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  deleteDoctor(doctorId: 1)\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Patient CRUD",
+          "item": [
+            {
+              "name": "Criar paciente",
+              "request": {
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "password",
+                      "value": "",
+                      "type": "string"
+                    },
+                    {
+                      "key": "username",
+                      "value": "",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  createPatient(input: {\r\n    name: \"Carlos Mendes\"\r\n    cpf: \"48866695861\"\r\n    email: \"carlos1@email.com\"\r\n    username: \"carlos.mendes1\"\r\n    password: \"carlos123\"\r\n  }) {\r\n    id\r\n    name\r\n    cpf\r\n    email\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar todos pacientes",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  patients {\r\n    id\r\n    name\r\n    cpf\r\n    email\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar paciente por ID",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  patient(patientId: 1) {\r\n    id\r\n    name\r\n    cpf\r\n    email\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar Paciente",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  updatePatient(\r\n    patientId: 1, \r\n    name: \"Carlos Mendes Junior\", \r\n    email: \"carlos.junior@email.com\"\r\n  ) {\r\n    id\r\n    name\r\n    email\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Deletar paciente",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  deletePatient(patientId: 1)\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Nurse CRUD",
+          "item": [
+            {
+              "name": "Criar enfermeiro",
+              "request": {
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "password",
+                      "value": "",
+                      "type": "string"
+                    },
+                    {
+                      "key": "username",
+                      "value": "",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  createNurse(input: {\r\n    name: \"Maria Silva\",\r\n    coren: \"COREN-SP 123456\",\r\n    username: \"maria.silva\",\r\n    password: \"password123\"\r\n  }) {\r\n    id\r\n    name\r\n    coren\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar todos enfermeiros",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  nurses {\r\n    id\r\n    name\r\n    coren\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar enfermeiro por ID",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  nurse(nurseId: 1) {\r\n    id\r\n    name\r\n    coren\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar Enfermeiro",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  updateNurse(nurseId: 1, name: \"Maria Silva de Oliveira\") {\r\n    id\r\n    name\r\n    coren\r\n    username\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remover enfermeiro",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  deleteNurse(nurseId: 1)\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Appointment CRUD",
+          "item": [
+            {
+              "name": "Criar consulta",
+              "request": {
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "password",
+                      "value": "",
+                      "type": "string"
+                    },
+                    {
+                      "key": "username",
+                      "value": "",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  createAppointment(\r\n    patientId: 1, \r\n    doctorId: 1, \r\n    dateTime: \"2026-10-15T14:30:00\"\r\n  ) {\r\n    id\r\n    status\r\n    dateTime\r\n    patient {\r\n      name\r\n    }\r\n    doctor {\r\n      name\r\n    }\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar todas as consultas do paciente (pacientes)",
+              "request": {
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "password",
+                      "value": "",
+                      "type": "string"
+                    },
+                    {
+                      "key": "username",
+                      "value": "carlos.mendes1",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  patientAppointments {\r\n    id\r\n    dateTime\r\n    status\r\n    doctor {\r\n      name\r\n      specialty\r\n    }\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar histórico de consultas do paciente (Médicos, enfermeiras e administrador)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query {\r\n  appointmentsByPatient(patientId: 1) {\r\n    id\r\n    dateTime\r\n    status\r\n    doctor {\r\n      name\r\n      specialty\r\n    }\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Alterar data da consulta (Médico, administrador)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n    updateAppointment(\r\n    id: 1, \r\n    doctorId: 1, \r\n    dateTime: \"2026-11-20T10:00:00\"\r\n  ) {\r\n    id\r\n    status\r\n    dateTime\r\n    doctor {\r\n      name\r\n      specialty\r\n    }\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancelar Consulta (Médico, administrador)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  cancelAppointment(id: 1) {\r\n    id\r\n    status\r\n    dateTime\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Concluir Consulta (Médico, administrador)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "mutation {\r\n  completeAppointment(id: 1) {\r\n    id\r\n    status\r\n    dateTime\r\n  }\r\n}",
+                    "variables": ""
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8082/graphql",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "graphql"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/info",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "info"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "notification-api",
+      "item": [
+        {
+          "name": "Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/info",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "info"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_password_1dkw",
+      "secret": true
+    }
+  ]
+}

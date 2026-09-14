@@ -1,0 +1,50 @@
+"""
+Representa um paciente cadastrado no sistema do hospital.
+"""
+type Patient {
+    id: ID!
+    name: String!
+    cpf: String!
+    email: String!
+    username: String!
+}
+
+"""
+Dados necessários para o cadastro de um novo paciente.
+"""
+input CreatePatientInput {
+    name: String!
+    cpf: String!
+    email: String!
+    username: String!
+    password: String!
+}
+
+extend type Query {
+    """
+    Busca os dados de um paciente específico pelo seu ID.
+    """
+    patient(patientId: ID!): Patient!
+
+    """
+    Lista todos os pacientes cadastrados no sistema.
+    """
+    patients: [Patient!]!
+}
+
+extend type Mutation {
+    """
+    Cadastra um novo paciente no sistema (Acesso: ADMIN).
+    """
+    createPatient(input: CreatePatientInput!): Patient!
+
+    """
+    Atualiza os dados cadastrais de um paciente (Acesso: ADMIN).
+    """
+    updatePatient(patientId: ID!, name: String, email: String): Patient!
+
+    """
+    Remove um paciente do sistema (Acesso: ADMIN).
+    """
+    deletePatient(patientId: ID!): Boolean!
+}

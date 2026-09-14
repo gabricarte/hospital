@@ -2,12 +2,14 @@ package br.com.fiap.appointment_api.controller;
 
 import br.com.fiap.appointment_api.domain.dto.CreatePatientInput;
 import br.com.fiap.appointment_api.domain.dto.response.PatientResponse;
+import br.com.fiap.appointment_api.mapper.PatientMapper;
 import br.com.fiap.appointment_api.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -19,7 +21,24 @@ public class PatientGraphQLController {
     private final PatientService patientService;
     private final PatientMapper patientMapper;
 
+    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public PatientResponse createPatient(
+            @Argument @Valid CreatePatientInput input
+    ) {
+        return patientMapper.toResponse(
+                patientService.createPatient(
+                        input.name(),
+                        input.cpf(),
+                        input.email(),
+                        input.username(),
+                        input.password()
+                )
+        );
+    }
+
     @QueryMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'PATIENT')")
     public PatientResponse patient(
             @Argument Long patientId
     ) {
@@ -29,6 +48,7 @@ public class PatientGraphQLController {
     }
 
     @QueryMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'PATIENT')")
     public List<PatientResponse> patients() {
         return patientService.findAll()
                 .stream()
@@ -37,19 +57,7 @@ public class PatientGraphQLController {
     }
 
     @MutationMapping
-    public PatientResponse createPatient(
-            @Argument @Valid CreatePatientInput input
-    ) {
-        return patientMapper.toResponse(
-                patientService.createPatient(
-                        input.name(),
-                        input.cpf(),
-                        input.email()
-                )
-        );
-    }
-
-    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public PatientResponse updatePatient(
             @Argument Long patientId,
             @Argument String name,
@@ -65,6 +73,7 @@ public class PatientGraphQLController {
     }
 
     @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Boolean deletePatient(
             @Argument Long patientId
     ) {

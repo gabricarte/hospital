@@ -5,8 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "doctors")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -24,4 +24,17 @@ public class Doctor {
 
     @Column(nullable = false, length = 50)
     private String specialty;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void updateInformation(String name, String specialty) {
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+        if (specialty != null && !specialty.isBlank()) {
+            this.specialty = specialty;
+        }
+    }
 }

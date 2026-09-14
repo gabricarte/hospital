@@ -1,17 +1,19 @@
 package br.com.fiap.appointment_api.service;
 
+import br.com.fiap.appointment_api.domain.dto.AppointmentNotificationDTO;
 import br.com.fiap.appointment_api.domain.entity.Appointment;
 import br.com.fiap.appointment_api.domain.entity.Doctor;
 import br.com.fiap.appointment_api.domain.entity.Patient;
-import br.com.fiap.appointment_api.domain.enums.AppointmentStatus;
-import br.com.fiap.appointment_api.exception.BusinessException;
 import br.com.fiap.appointment_api.exception.ResourceNotFoundException;
+import br.com.fiap.appointment_api.publisher.AppointmentMessagePublisher;
 import br.com.fiap.appointment_api.repository.AppointmentRepository;
 import br.com.fiap.appointment_api.repository.DoctorRepository;
 import br.com.fiap.appointment_api.repository.PatientRepository;
+import br.com.fiap.appointment_api.util.AppointmentValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,141 +25,105 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final AppointmentValidator validator;
+    private final AppointmentMessagePublisher messagePublisher;
+    private final ObjectMapper objectMapper;
 
     @Transactional
-    public Appointment create(
-            Long patientId,
-            Long doctorId,
-            LocalDateTime dateTime
-    ) {
+    public Appointment create(Long patientId, Long doctorId, LocalDateTime dateTime) {
+        validator.validateCreation(patientId, doctorId, dateTime);
 
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Paciente não encontrado."
-                        )
-                );
+        Patient patient = getPatient(patientId);
+        Doctor doctor = getDoctor(doctorId);
 
-        Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Médico não encontrado."
-                        )
-                );
+        Appointment appointment = new Appointment(patient, doctor, dateTime);
 
-        if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new BusinessException(
-                    "Não é possível agendar uma consulta no passado."
-            );
-        }
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        sendNotification(savedAppointment);
 
-        if (appointmentRepository.existsByDoctorIdAndDateTime(
-                doctorId,
-                dateTime
-        )) {
-            throw new BusinessException(
-                    "O médico já possui uma consulta nesse horário."
-            );
-        }
-
-        if (appointmentRepository.existsByPatientIdAndDateTime(
-                patientId,
-                dateTime
-        )) {
-            throw new BusinessException(
-                    "O paciente já possui uma consulta nesse horário."
-            );
-        }
-
-        Appointment appointment = new Appointment();
-
-        appointment.setPatient(patient);
-        appointment.setDoctor(doctor);
-        appointment.setDateTime(dateTime);
-        appointment.setStatus(AppointmentStatus.AGENDADA);
-
-        return appointmentRepository.save(appointment);
+        return savedAppointment;
     }
 
     @Transactional(readOnly = true)
     public Appointment findById(Long id) {
-
         return appointmentRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Consulta não encontrada."
-                        )
-                );
+                .orElseThrow(() -> new ResourceNotFoundException("Consulta não encontrada."));
     }
 
-    @Transactional(readOnly = true)
-    public List<Appointment> findByPatientId(Long patientId) {
-
-        validatePatient(patientId);
-
-        return appointmentRepository.findByPatientId(patientId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Appointment> findFutureByPatientId(Long patientId) {
-
-        validatePatient(patientId);
-
-        return appointmentRepository.findByPatientIdAndDateTimeAfter(
-                patientId,
-                LocalDateTime.now()
-        );
+    public List<Appointment> findByUsername(String username) {
+        return appointmentRepository.findByPatientUserUsername(username);
     }
 
     @Transactional(readOnly = true)
     public List<Appointment> findHistoryByPatientId(Long patientId) {
+        validator.validatePatientExists(patientId);
+        return appointmentRepository.findByPatientIdAndDateTimeBefore(patientId, LocalDateTime.now());
+    }
 
-        validatePatient(patientId);
+    @Transactional
+    public Appointment update(Long id, Long doctorId, LocalDateTime dateTime) {
+        Appointment appointment = findById(id);
+        validator.validateUpdate(appointment, doctorId, dateTime);
 
-        return appointmentRepository.findByPatientIdAndDateTimeBefore(
-                patientId,
-                LocalDateTime.now()
-        );
+        Doctor doctor = getDoctor(doctorId);
+        appointment.reschedule(doctor, dateTime);
+
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+        sendNotification(updatedAppointment);
+
+        return updatedAppointment;
     }
 
     @Transactional
     public Appointment cancel(Long id) {
-
         Appointment appointment = findById(id);
+        validator.validateStateTransition(appointment);
 
-        if (appointment.getStatus() != AppointmentStatus.AGENDADA) {
-            throw new BusinessException(
-                    "Apenas consultas agendadas podem ser canceladas."
-            );
-        }
+        appointment.cancel();
 
-        appointment.setStatus(AppointmentStatus.CANCELADA);
+        Appointment cancelledAppointment = appointmentRepository.save(appointment);
+        sendNotification(cancelledAppointment);
 
-        return appointmentRepository.save(appointment);
+        return cancelledAppointment;
     }
 
     @Transactional
     public Appointment complete(Long id) {
-
         Appointment appointment = findById(id);
+        validator.validateStateTransition(appointment);
 
-        if (appointment.getStatus() != AppointmentStatus.AGENDADA) {
-            throw new BusinessException(
-                    "Apenas consultas agendadas podem ser concluídas."
-            );
-        }
+        appointment.complete();
 
-        appointment.setStatus(AppointmentStatus.CONCLUIDA);
+        Appointment completedAppointment = appointmentRepository.save(appointment);
+        sendNotification(completedAppointment);
 
-        return appointmentRepository.save(appointment);
+        return completedAppointment;
     }
 
-    private void validatePatient(Long patientId) {
+    private Patient getPatient(Long id) {
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado."));
+    }
 
-        if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException(
-                    "Paciente não encontrado."
+    private Doctor getDoctor(Long id) {
+        return doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Médico não encontrado."));
+    }
+
+    private void sendNotification(Appointment appointment) {
+        try {
+            AppointmentNotificationDTO dto = new AppointmentNotificationDTO(
+                    appointment.getPatient().getEmail(),
+                    appointment.getPatient().getName(),
+                    appointment.getDoctor().getName(),
+                    appointment.getDateTime()
             );
+
+            String message = objectMapper.writeValueAsString(dto);
+            messagePublisher.sendAppointmentMessage(message);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao processar o envio da notificação.", e);
         }
     }
 }

@@ -26,7 +26,8 @@ public class AppointmentMapper {
                 patient.getId(),
                 patient.getName(),
                 patient.getCpf(),
-                patient.getEmail()
+                patient.getEmail(),
+                patient.getUser().getUsername()
         );
     }
 
@@ -35,7 +36,8 @@ public class AppointmentMapper {
                 doctor.getId(),
                 doctor.getName(),
                 doctor.getCrm(),
-                doctor.getSpecialty()
+                doctor.getSpecialty(),
+                doctor.getUser().getUsername()
         );
     }
 }

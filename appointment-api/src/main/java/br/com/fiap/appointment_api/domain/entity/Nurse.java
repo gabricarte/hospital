@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data
-@Table(name = "patients")
-@Builder
+@Table(name = "nurses")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Patient {
+@Builder
+public class Nurse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,20 +18,16 @@ public class Patient {
 
     private String name;
 
-    private String cpf;
-
-    private String email;
+    @Column(unique = true, nullable = false)
+    private String coren;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateInformation(String name, String email) {
+    public void updateInformation(String name) {
         if (name != null && !name.isBlank()) {
             this.name = name;
-        }
-        if (email != null && !email.isBlank()) {
-            this.email = email;
         }
     }
 }

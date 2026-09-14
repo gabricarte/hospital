@@ -21,6 +21,14 @@ public record CreatePatientInput(
         @NotBlank(message = "O e-mail é obrigatório.")
         @Email(message = "O e-mail informado é inválido.")
         @Size(max = 255, message = "O e-mail deve possuir no máximo 255 caracteres.")
-        String email
+        String email,
+
+        @NotBlank(message = "O username é obrigatório.")
+        @Size(max = 50, message = "O e-mail deve possuir no máximo 50 caracteres.")
+        String username,
+
+        @NotBlank(message = "A senha é obrigatória.")
+        @Size(max = 50, message = "A senha deve possuir no máximo 50 caracteres.")
+        String password
 ) {
 }

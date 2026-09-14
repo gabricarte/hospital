@@ -1,0 +1,48 @@
+"""
+Representa um profissional de enfermagem cadastrado no sistema.
+"""
+type Nurse {
+    id: ID!
+    name: String!
+    coren: String!
+    username: String!
+}
+
+"""
+Dados necessários para o cadastro de um novo enfermeiro(a).
+"""
+input CreateNurseInput {
+    name: String!
+    coren: String!
+    username: String!
+    password: String!
+}
+
+extend type Query {
+    """
+    Busca os dados de um enfermeiro(a) específico pelo seu ID.
+    """
+    nurse(nurseId: ID!): Nurse!
+
+    """
+    Lista todos os enfermeiros(as) cadastrados no sistema.
+    """
+    nurses: [Nurse!]!
+}
+
+extend type Mutation {
+    """
+    Cadastra um novo enfermeiro(a) no sistema (Acesso: ADMIN).
+    """
+    createNurse(input: CreateNurseInput!): Nurse!
+
+    """
+    Atualiza os dados cadastrais de um enfermeiro(a) (Acesso: ADMIN).
+    """
+    updateNurse(nurseId: ID!, name: String): Nurse!
+
+    """
+    Remove um enfermeiro(a) do sistema (Acesso: ADMIN).
+    """
+    deleteNurse(nurseId: ID!): Boolean!
+}

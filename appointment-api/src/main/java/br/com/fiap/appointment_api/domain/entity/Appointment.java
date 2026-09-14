@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "appointments")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -32,4 +31,24 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status;
+
+    public Appointment(Patient patient, Doctor doctor, LocalDateTime dateTime) {
+        this.patient = patient;
+        this.doctor = doctor;
+        this.dateTime = dateTime;
+        this.status = AppointmentStatus.SCHEDULED;
+    }
+
+    public void reschedule(Doctor newDoctor, LocalDateTime newDateTime) {
+        this.doctor = newDoctor;
+        this.dateTime = newDateTime;
+    }
+
+    public void cancel() {
+        this.status = AppointmentStatus.CANCELED;
+    }
+
+    public void complete() {
+        this.status = AppointmentStatus.COMPLETED;
+    }
 }

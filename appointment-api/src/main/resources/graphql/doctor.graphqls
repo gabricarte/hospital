@@ -1,0 +1,50 @@
+"""
+Representa um médico cadastrado no sistema do hospital.
+"""
+type Doctor {
+    id: ID!
+    name: String!
+    crm: String!
+    specialty: String!
+    username: String!
+}
+
+"""
+Dados necessários para o cadastro de um novo médico.
+"""
+input CreateDoctorInput {
+    name: String!
+    crm: String!
+    specialty: String!
+    username: String!
+    password: String!
+}
+
+extend type Query {
+    """
+    Busca os dados de um médico específico pelo seu ID.
+    """
+    doctor(doctorId: ID!): Doctor!
+
+    """
+    Lista todos os médicos cadastrados no sistema.
+    """
+    doctors: [Doctor!]!
+}
+
+extend type Mutation {
+    """
+    Cadastra um novo médico no sistema (Acesso: ADMIN).
+    """
+    createDoctor(input: CreateDoctorInput!): Doctor!
+
+    """
+    Atualiza os dados cadastrais de um médico (Acesso: ADMIN).
+    """
+    updateDoctor(doctorId: ID!, name: String, specialty: String): Doctor!
+
+    """
+    Remove um médico do sistema (Acesso: ADMIN).
+    """
+    deleteDoctor(doctorId: ID!): Boolean!
+}

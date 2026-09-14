@@ -1,0 +1,68 @@
+"""
+Representa o agendamento de uma consulta médica.
+"""
+type Appointment {
+    id: ID!
+    patient: Patient!
+    doctor: Doctor!
+    dateTime: String!
+    status: AppointmentStatus!
+}
+
+"""
+Os possíveis estados de uma consulta médica.
+"""
+enum AppointmentStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELED
+}
+
+type Query {
+    """
+    Lista todas as consultas de um paciente específico (Requer ID do paciente).
+    """
+    appointmentsByPatient(patientId: ID!): [Appointment!]!
+
+    """
+    Lista todas as consultas pertencentes ao paciente autenticado (Acesso: PATIENT).
+    """
+    patientAppointments: [Appointment!]!
+
+    """
+    Lista apenas as consultas futuras pertencentes ao paciente autenticado (Acesso: PATIENT).
+    """
+    patientFutureAppointments: [Appointment!]!
+
+    """
+    Busca o histórico completo de consultas de um paciente específico (Acesso: DOCTOR, NURSE, ADMIN).
+    """
+    appointmentHistory(patientId: ID!): [Appointment!]!
+
+    """
+    Busca os detalhes de uma consulta específica pelo seu ID.
+    """
+    appointment(id: ID!): Appointment!
+}
+
+type Mutation {
+    """
+    Registra uma nova consulta médica e dispara notificação (Acesso: NURSE, ADMIN).
+    """
+    createAppointment(patientId: ID!, doctorId: ID!, dateTime: String!): Appointment!
+
+    """
+    Cancela uma consulta médica existente (Acesso: DOCTOR, ADMIN).
+    """
+    cancelAppointment(id: ID!): Appointment!
+
+    """
+    Marca uma consulta médica como concluída (Acesso: DOCTOR, ADMIN).
+    """
+    completeAppointment(id: ID!): Appointment!
+
+    """
+    Atualiza os dados de data ou médico de uma consulta existente (Acesso: DOCTOR, ADMIN).
+    """
+    updateAppointment(id: ID!, doctorId: ID!, dateTime: String!): Appointment!
+}

@@ -1,10 +1,14 @@
 package br.com.fiap.appointment_api.service;
 
 import br.com.fiap.appointment_api.domain.entity.Patient;
+import br.com.fiap.appointment_api.domain.entity.User;
+import br.com.fiap.appointment_api.domain.enums.UserRole;
 import br.com.fiap.appointment_api.exception.BusinessException;
 import br.com.fiap.appointment_api.exception.ResourceNotFoundException;
 import br.com.fiap.appointment_api.repository.PatientRepository;
+import br.com.fiap.appointment_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,43 +19,35 @@ import java.util.List;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Patient createPatient(
-            String name,
-            String cpf,
-            String email
-    ) {
+    public Patient createPatient(String name, String cpf, String email, String username, String password) {
+        validatePatient(cpf, email, username);
 
-        if (patientRepository.existsByCpf(cpf)) {
-            throw new BusinessException(
-                    "Já existe um paciente cadastrado com este CPF."
-            );
-        }
+        User user = userRepository.save(
+                User.builder()
+                        .username(username)
+                        .password(passwordEncoder.encode(password))
+                        .role(UserRole.PATIENT)
+                        .build()
+        );
 
-        if (patientRepository.existsByEmail(email)) {
-            throw new BusinessException(
-                    "Já existe um paciente cadastrado com este e-mail."
-            );
-        }
-
-        Patient patient = new Patient();
-        patient.setName(name);
-        patient.setCpf(cpf);
-        patient.setEmail(email);
+        Patient patient = Patient.builder()
+                .name(name)
+                .cpf(cpf)
+                .email(email)
+                .user(user)
+                .build();
 
         return patientRepository.save(patient);
     }
 
     @Transactional(readOnly = true)
     public Patient findById(Long patientId) {
-
         return patientRepository.findById(patientId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Paciente não encontrado."
-                        )
-                );
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado. "));
     }
 
     @Transactional(readOnly = true)
@@ -60,33 +56,35 @@ public class PatientService {
     }
 
     @Transactional
-    public Patient updatePatient(
-            Long patientId,
-            String name,
-            String email
-    ) {
-
+    public Patient updatePatient(Long patientId, String name, String email) {
         Patient patient = findById(patientId);
 
-        if (!patient.getEmail().equals(email)
-                && patientRepository.existsByEmail(email)) {
-
-            throw new BusinessException(
-                    "Já existe um paciente cadastrado com este e-mail."
-            );
+        if (!patient.getEmail().equals(email) && patientRepository.existsByEmail(email)) {
+            throw new BusinessException("Um paciente com esse e-mail já foi registrado. ");
         }
 
-        patient.setName(name);
-        patient.setEmail(email);
+        patient.updateInformation(name, email);
 
         return patientRepository.save(patient);
     }
 
     @Transactional
     public void deletePatient(Long patientId) {
-
         Patient patient = findById(patientId);
-
         patientRepository.delete(patient);
+    }
+
+    private void validatePatient(String cpf, String email, String username) {
+        if (patientRepository.existsByCpf(cpf)) {
+            throw new BusinessException("Já existe um paciente com esse CPF. ");
+        }
+
+        if (patientRepository.existsByEmail(email)) {
+            throw new BusinessException("Já existe um paciente com esse e-mail. ");
+        }
+
+        if (userRepository.existsByUsername(username)) {
+            throw new BusinessException("Já existe um paciente com esse username. ");
+        }
     }
 }

@@ -15,6 +15,14 @@ public record CreateDoctorInput(
 
         @NotBlank(message = "A especialidade é obrigatória.")
         @Size(max = 50, message = "A especialidade deve possuir no máximo 50 caracteres.")
-        String specialty
+        String specialty,
+
+        @NotBlank(message = "O username é obrigatório.")
+        @Size(max = 50, message = "O e-mail deve possuir no máximo 50 caracteres.")
+        String username,
+
+        @NotBlank(message = "A senha é obrigatória.")
+        @Size(max = 50, message = "A senha deve possuir no máximo 50 caracteres.")
+        String password
 ) {
 }
